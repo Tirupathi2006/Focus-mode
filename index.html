@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Focus Mode</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    #timer {
+      font-size: 5rem;
+      margin: 20px 0;
+    }
+
+    .controls {
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+
+    .sound-toggle {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧘 Focus Mode</h1>
+  <div id="timer">25:00</div>
+  <div class="controls">
+    <button onclick="startFocus()">Start</button>
+    <button onclick="resetFocus()">Reset</button>
+  </div>
+
+  <div class="sound-toggle">
+    <label>
+      <input type="checkbox" id="soundToggle" onchange="toggleSound()"> Play Background Sound
+    </label>
+  </div>
+
+  <audio id="backgroundSound" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+  </audio>
+
+  <script>
+    let timer;
+    let timeLeft = 25 * 60; // 25 minutes
+    let running = false;
+
+    function updateDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById('timer').innerText =
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function startFocus() {
+      if (running) return;
+      running = true;
+      timer = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateDisplay();
+        } else {
+          clearInterval(timer);
+          running = false;
+          alert('Focus session complete!');
+        }
+      }, 1000);
+    }
+
+    function resetFocus() {
+      clearInterval(timer);
+      timeLeft = 25 * 60;
+      updateDisplay();
+      running = false;
+    }
+
+    function toggleSound() {
+      const audio = document.getElementById('backgroundSound');
+      const checked = document.getElementById('soundToggle').checked;
+      if (checked) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    }
+
+    updateDisplay(); // initialize
+  </script>
+</body>
+</html>
