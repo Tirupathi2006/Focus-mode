@@ -30,21 +30,31 @@
       margin-top: 20px;
     }
 
-    button {
+    button, input[type="number"] {
       padding: 10px 20px;
       font-size: 1rem;
-      margin: 0 10px;
-      cursor: pointer;
+      margin: 10px;
     }
 
     .sound-toggle {
       margin-top: 20px;
     }
+
+    label {
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
   <h1>🧘 Focus Mode</h1>
+
+  <div>
+    <label for="customTime">Focus Time (minutes): </label>
+    <input type="number" id="customTime" value="25" min="1" max="180">
+  </div>
+
   <div id="timer">25:00</div>
+
   <div class="controls">
     <button onclick="startFocus()">Start</button>
     <button onclick="resetFocus()">Reset</button>
@@ -62,8 +72,9 @@
 
   <script>
     let timer;
-    let timeLeft = 25 * 60; // 25 minutes
+    let timeLeft = 25 * 60; // default 25 minutes
     let running = false;
+    let customMinutes = 25;
 
     function updateDisplay() {
       const minutes = Math.floor(timeLeft / 60);
@@ -74,6 +85,17 @@
 
     function startFocus() {
       if (running) return;
+
+      const userInput = parseInt(document.getElementById('customTime').value);
+      if (isNaN(userInput) || userInput <= 0) {
+        alert("Please enter a valid number of minutes.");
+        return;
+      }
+
+      customMinutes = userInput;
+      timeLeft = customMinutes * 60;
+      updateDisplay();
+
       running = true;
       timer = setInterval(() => {
         if (timeLeft > 0) {
@@ -89,9 +111,10 @@
 
     function resetFocus() {
       clearInterval(timer);
-      timeLeft = 25 * 60;
-      updateDisplay();
       running = false;
+      const resetMinutes = parseInt(document.getElementById('customTime').value) || 25;
+      timeLeft = resetMinutes * 60;
+      updateDisplay();
     }
 
     function toggleSound() {
@@ -104,7 +127,8 @@
       }
     }
 
-    updateDisplay(); // initialize
+    // Initialize timer display
+    updateDisplay();
   </script>
 </body>
 </html>
